@@ -1,7 +1,7 @@
 
 ## Recipe Recommendation Bot
-## What's cooking?
-![](Images/Robo_Chef.png)
+# What's cooking?
+![](Images/robo_chef_cartoon.jpeg)
 
 ## Contributors
 _______________________________________________________________________________________________________________________
@@ -9,9 +9,8 @@ ________________________________________________________________________________
 - Shanel Kuchera
 - JJ Torres
 
-
-
 ## Project Description
+______________________________________________________________________________________________________________________
 - Create a tool that recommends recipes based on ingredients inputted to help you eat better food.
 - Scrape over 5000 recipes from All Recipes using python and beautiful soup.
 - Create a recipe recommendation system inputting ingredients on hand
