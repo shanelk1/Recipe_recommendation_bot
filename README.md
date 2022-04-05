@@ -1,5 +1,3 @@
-
-<<<<<<< HEAD
 ## Recipe Recommendation Bot
 # What's cooking?
 ![](Images/robo_chef_cartoon.jpeg)
@@ -36,5 +34,4 @@ ________________________________________________________________________________
 6. Include a wine pairing suggestion automatically based on recipe generated. White or red
 6. Deploy a chatbot
 7. Final question of end user... "Do you think this recipe was a good recommendation?"
-=======
->>>>>>> d1b47c3ee6f205fb393621badb8638e4108aefa5
+
