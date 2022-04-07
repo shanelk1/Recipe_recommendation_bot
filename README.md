@@ -1,5 +1,5 @@
-## Recipe Recommendation Bot
-# What's cooking?
+# Recipe Recommendation Bot
+## What's cooking?
 ![](Images/robo_chef_cartoon.jpeg)
 
 ## Contributors
@@ -35,3 +35,6 @@ ________________________________________________________________________________
 6. Deploy a chatbot
 7. Final question of end user... "Do you think this recipe was a good recommendation?"
 
+_______________________________________________________________________________________________________________________
+
+![](Images/wine-and-food-pairing-chart.png)
