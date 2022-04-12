@@ -94,7 +94,7 @@ def get_responce(updater, context):
     recipes_df.reset_index(inplace=True)
 
     random = random.randint(0, len(recipes_df))
-    scrape = scrape_me(recipes_df['url'][random])
+    scrape = scrape_me(recipes_df['url'][0])
     title = scrape.title()
 
     instructions = scrape.instructions()
