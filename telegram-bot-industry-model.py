@@ -1,16 +1,32 @@
 # importing the required libraries for telegram
 
 from telegram.ext import Updater, Filters, CommandHandler, MessageHandler
-
-from tensorflow.keras.preprocessing import image_dataset_from_directory
+import tensorflow as tf
+from tensorflow.keras.preprocessing import *
 import pickle
 import pandas as pd
+import numpy as np
+import requests as rq
 from tensorflow import keras
-model = keras.models.load_model(
-    '../Jay-branch/model4')
-# creating the updater instance to use our bot api key
+from tensorflow.keras.applications.xception import decode_predictions
+import os
+from dotenv import load_dotenv
 
-updater = Updater('5216349249:AAFjRqBdu3VkZJbHRr2Xa-WdH99iXhbvLbk')
+# importing Xception model
+model = tf.keras.applications.Xception(
+    include_top=True,
+    weights="imagenet",
+    input_tensor=None,
+    input_shape=None,
+    pooling=None,
+    classes=1000,
+    classifier_activation="softmax",
+)
+
+# creating the updater instance to use our bot api key
+load_dotenv()
+telegram_api = os.getenv("telegram-api")
+updater = Updater(telegram_api)
 dispatcher = updater.dispatcher
 
 # Define all the different commands to be used by the bot
@@ -34,26 +50,25 @@ def helper(updater, context):
 
 def process_photo(updater, context):
     photo = updater.message.photo[-1].get_file()
-    photo.download('test_image/class1/img.jpg')
+    photo_loc = photo.download('test_image/class1/img.jpg')
 
-    test_image_df = image_dataset_from_directory(
-        directory='test_image',
-        labels='inferred',
-        label_mode='categorical',
-        seed=5,
-        color_mode="rgb",
-        shuffle=True,
-        batch_size=32,
-        image_size=(100, 100)
-    )
 
-    labels_df = pd.read_csv('labels_148.csv')
+# preprocess the image for Xception model
+    image = tf.keras.preprocessing.image.load_img(
+        photo_loc, target_size=(299, 299))
+    image = tf.keras.preprocessing.image.img_to_array(image)
+    image = tf.keras.applications.xception.preprocess_input(image)
+# get the model labels
+    response = rq.get(
+        'https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json')
+    imgnet_map = response.json()
+    imgnet_map = {v[1]: k for k, v in imgnet_map.items()}
 
-    label = labels_df.iloc[model.predict(test_image_df).argmax()]
-    label = label.ingredient
+    prediction = model.predict(np.array([image]))
+    label = decode_predictions(prediction, top=5)
 
     updater.message.reply_text(
-        f'You sent an image of what seems to be a {label} .  since we are in beta please go ahead and write a list of ingredients for me')
+        f'Your sent an image of what seems to have a {label[0][0][1]} .  Since we are in beta please go ahead and write a list of ingredients for me')
 
 # instance that takes the user text input and then scrapes the all recipes website to return a randoom recipe
 # this is utilizes a python module developed by @hhursev  from https://github.com/hhursev/recipe-scrapers
@@ -94,15 +109,15 @@ def get_responce(updater, context):
     recipes_df.reset_index(inplace=True)
 
     random = random.randint(0, len(recipes_df))
-    scrape = scrape_me(recipes_df['url'][0])
+    scrape = scrape_me(recipes_df['url'][random])
     title = scrape.title()
 
     instructions = scrape.instructions()
 
     updater.message.reply_text(
         f'You can make ** {title} ** with you list provided and here is how to make it: \n{instructions}')
-    print(f'user input was {recipes}')
-    print('the site :{http_start} was used')
+    print(f'user input was {ingredients}')
+    print(f'the site :{url} was used')
 
 
 # dispatchers for the various commands and listeners from within the telegram bot
