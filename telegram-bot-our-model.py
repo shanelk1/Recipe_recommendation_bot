@@ -1,29 +1,15 @@
 # importing the required libraries for telegram
 
 from telegram.ext import Updater, Filters, CommandHandler, MessageHandler
-import tensorflow as tf
-from tensorflow.keras.preprocessing import *
+
+from tensorflow.keras.preprocessing import image_dataset_from_directory
 import pickle
 import pandas as pd
-import numpy as np
-import requests as rq
 from tensorflow import keras
-from tensorflow.keras.applications.xception import decode_predictions
-import os
-from dotenv import load_dotenv
-
-# importing Xception model
-model = tf.keras.applications.Xception(
-    include_top=True,
-    weights="imagenet",
-    input_tensor=None,
-    input_shape=None,
-    pooling=None,
-    classes=1000,
-    classifier_activation="softmax",
-)
-
+model = keras.models.load_model(
+    '../Jay-branch/model4')
 # creating the updater instance to use our bot api key
+
 load_dotenv()
 telegram_api = os.getenv("telegram-api")
 updater = Updater(telegram_api)
@@ -50,25 +36,26 @@ def helper(updater, context):
 
 def process_photo(updater, context):
     photo = updater.message.photo[-1].get_file()
-    photo_loc = photo.download('test_image/class1/img.jpg')
+    photo.download('test_image/class1/img.jpg')
 
+    test_image_df = image_dataset_from_directory(
+        directory='test_image',
+        labels='inferred',
+        label_mode='categorical',
+        seed=5,
+        color_mode="rgb",
+        shuffle=True,
+        batch_size=32,
+        image_size=(100, 100)
+    )
 
-# preprocess the image for Xception model
-    image = tf.keras.preprocessing.image.load_img(
-        photo_loc, target_size=(299, 299))
-    image = tf.keras.preprocessing.image.img_to_array(image)
-    image = tf.keras.applications.xception.preprocess_input(image)
-# get the model labels
-    response = rq.get(
-        'https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json')
-    imgnet_map = response.json()
-    imgnet_map = {v[1]: k for k, v in imgnet_map.items()}
+    labels_df = pd.read_csv('labels_148.csv')
 
-    prediction = model.predict(np.array([image]))
-    label = decode_predictions(prediction, top=5)
+    label = labels_df.iloc[model.predict(test_image_df).argmax()]
+    label = label.ingredient
 
     updater.message.reply_text(
-        f'Your sent an image of what seems to have a {label[0][0][1]} .  Since we are in beta please go ahead and write a list of ingredients for me')
+        f'You sent an image of what seems to be a {label} .  since we are in beta please go ahead and write a list of ingredients for me')
 
 # instance that takes the user text input and then scrapes the all recipes website to return a randoom recipe
 # this is utilizes a python module developed by @hhursev  from https://github.com/hhursev/recipe-scrapers
@@ -113,14 +100,6 @@ def get_responce(updater, context):
     title = scrape.title()
 
     instructions = scrape.instructions()
-    
-    import spoonacular as sp
-    import os
-    from dotenv import load_dotenv
-    load_dotenv()
-    api = sp.API(os.getenv(spoonacular-key))
-    
-    api.
 
     updater.message.reply_text(
         f'You can make ** {title} ** with you list provided and here is how to make it: \n{instructions}')
