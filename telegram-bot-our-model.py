@@ -10,7 +10,9 @@ model = keras.models.load_model(
     '../Jay-branch/model4')
 # creating the updater instance to use our bot api key
 
-updater = Updater('5216349249:AAFjRqBdu3VkZJbHRr2Xa-WdH99iXhbvLbk')
+load_dotenv()
+telegram_api = os.getenv("telegram-api")
+updater = Updater(telegram_api)
 dispatcher = updater.dispatcher
 
 # Define all the different commands to be used by the bot
@@ -101,8 +103,8 @@ def get_responce(updater, context):
 
     updater.message.reply_text(
         f'You can make ** {title} ** with you list provided and here is how to make it: \n{instructions}')
-    print(f'user input was {recipes}')
-    print('the site :{http_start} was used')
+    print(f'user input was {ingredients}')
+    print(f'the site :{url} was used')
 
 
 # dispatchers for the various commands and listeners from within the telegram bot
