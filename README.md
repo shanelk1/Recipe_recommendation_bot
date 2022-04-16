@@ -23,6 +23,9 @@ ________________________________________________________________________________
 | NLP |
 | Wordcloud |
 
+- [Fruits and Vegetables Image Recognition Dataset](https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition)
+- [Food Images (Food-101)](https://www.kaggle.com/datasets/kmader/food41)
+
 
 ## Rough Breakdown of Tasks
 _______________________________________________________________________________________________________________________
