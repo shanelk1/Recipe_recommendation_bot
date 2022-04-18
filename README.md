@@ -41,3 +41,13 @@ ________________________________________________________________________________
 _______________________________________________________________________________________________________________________
 
 ![](Images/wine-and-food-pairing-chart.png)
+
+## Results from the Project
+
+- successfully trained and tested the model using keras and tensorflow
+    - The model can be improved by using a larger number of images
+    - more techniques can be used to improve the model such as 
+- successfully deployed the chatbot using the telegram API 
+- investigated the use of Amazon lex as a backend to provide a better user experience by using the AWS-API as a backend
+
+
